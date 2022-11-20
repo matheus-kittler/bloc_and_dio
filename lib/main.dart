@@ -1,5 +1,8 @@
 import 'package:bloc_and_dio_test/bloc/home_bloc.dart';
 import 'package:bloc_and_dio_test/bloc/counter_event.dart';
+import 'package:bloc_and_dio_test/repository/page_repository.dart';
+import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -43,6 +46,19 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
 
+  void getHttp() async {
+    try {
+      var response = await Dio().get('https://gb-mobile-app-teste.s3.amazonaws.com/data.json');
+      if (kDebugMode) {
+        print(response);
+      }
+    } catch(e) {
+      if (kDebugMode) {
+        print(e);
+      }
+    }
+  }
+
   // void _incrementCounter() {
   //   setState(() {
   //     _counter++;
@@ -57,7 +73,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   final bloc = CounterBloc();
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -71,10 +86,8 @@ class _MyHomePageState extends State<MyHomePage> {
           builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
             return Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget> [
-                const Text(
-                    'You have pushed the button this many times:'
-                ),
+              children: <Widget>[
+                const Text('You have pushed the button this many times:'),
                 Text(
                   '${snapshot.data}',
                   style: Theme.of(context).textTheme.displayMedium,
@@ -109,6 +122,14 @@ class _MyHomePageState extends State<MyHomePage> {
             onPressed: () => bloc.counterEventController.add(RegressEvent()),
             tooltip: 'Regress',
             child: const Icon(Icons.remove),
+          ),
+          const SizedBox(width: 10),
+          FloatingActionButton(
+              onPressed: () {
+                getHttp();
+              },
+            tooltip: 'getHttp',
+            child: const Icon(Icons.access_time),
           ),
         ],
       ), // This trailing comma makes auto-formatting nicer for build methods.
