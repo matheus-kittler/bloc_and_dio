@@ -4,9 +4,11 @@ import 'counter_event.dart';
 class CounterBloc {
   int counterV = 0;
 
+  // Sink - entrada
   final counterStateController = StreamController<int>();
   StreamSink<int> get inCounter => counterStateController.sink;
 
+  // Stream - saída
   Stream<int> get counter => counterStateController.stream;
 
   final counterEventController = StreamController<CounterEvent>();
@@ -20,13 +22,18 @@ class CounterBloc {
     if (event is IncrementEvent) {
       counterV++;
     } else {
-      counterV--;
+      if(counterV == 0) {
+        counterV;
+      } else {
+        counterV--;
+      }
     }
 
 
     inCounter.add(counterV);
   }
 
+  //libera o fluxo
   void dispose() {
     counterStateController.close();
     counterEventController.close();
