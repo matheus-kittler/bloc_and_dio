@@ -22,13 +22,11 @@ class Pokemon {
   late final String url;
 
   Pokemon.fromJson(Map<String, dynamic> json) {
-    final String last3characters =
-        json['url'].substring(json['url'].length - 3);
 
-    final pokemonId = last3characters.replaceAll('/', '');
+    id = json['url'].replaceAll("https://pokeapi.co/api/v2/pokemon/", "")
+        .replaceAll("/", "");
 
     name = json['name'];
     url = json['url'];
-    id = pokemonId;
   }
 }
