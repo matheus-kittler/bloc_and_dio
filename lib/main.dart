@@ -1,9 +1,9 @@
 import 'package:bloc_and_dio_test/bloc/home_bloc.dart';
 import 'package:bloc_and_dio_test/bloc/counter_event.dart';
-import 'package:bloc_and_dio_test/repository/page_repository.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 void main() {
   runApp(const MyApp());
@@ -35,21 +35,35 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  String _counter = "";
+  static const platform = const MethodChannel("flutter.native/helper");
 
   void getHttp() async {
     try {
-      var response = await Dio().get('https://gb-mobile-app-teste.s3.amazonaws.com/data.json');
+      var response = await Dio()
+          .get('https://gb-mobile-app-teste.s3.amazonaws.com/data.json');
       if (kDebugMode) {
-        ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text(response.toString()),
         ));
       }
-    } catch(e) {
+    } catch (e) {
       if (kDebugMode) {
         print(e);
       }
     }
+  }
+
+  void _openKeyboard() async {
+    String res = "";
+    try {
+      final String result = await platform.invokeMethod("helloFromNative");
+      res = result;
+    } on PlatformException catch (e) {}
+
+    setState(() {
+      _counter = res;
+    });
   }
 
   // utilizando o setState
@@ -58,7 +72,7 @@ class _MyHomePageState extends State<MyHomePage> {
   //     _counter++;
   //   });
   // }
-  //
+
   // void _regressCounter() {
   //   setState(() {
   //     _counter--;
@@ -74,41 +88,46 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       body: Center(
-        child: StreamBuilder(
-          stream: bloc.counter,
-          initialData: 0,
-          builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                const Text('You have pushed the button this many times:'),
-                Text(
-                  '${snapshot.data}',
-                  style: Theme.of(context).textTheme.displayMedium,
-                ),
-              ],
-            );
-          },
-        ),
-        // child: Column(
-        //   mainAxisAlignment: MainAxisAlignment.center,
-        //   children: <Widget>[
-        //     const Text(
-        //       'You have pushed the button this many times:',
-        //     ),
-        //     Text(
-        //       '$_counter',
-        //       style: Theme.of(context).textTheme.headline4,
-        //     ),
-        //   ],
+        // child: StreamBuilder(
+        //   stream: bloc.counter,
+        //   initialData: 0,
+        //   builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
+        //     return Column(
+        //       mainAxisAlignment: MainAxisAlignment.center,
+        //       children: <Widget>[
+        //         const Text('You have pushed the button this many times:'),
+        //         Text(
+        //           '${snapshot.data}',
+        //           style: Theme.of(context).textTheme.displayMedium,
+        //         ),
+        //       ],
+        //     );
+        //   },
         // ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            const Text(
+              'You have pushed the button this many times:',
+            ),
+            Text(
+              '$_counter',
+              style: Theme.of(context).textTheme.headlineMedium,
+            ),
+          ],
+        ),
       ),
       floatingActionButton: Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: <Widget>[
+          // FloatingActionButton(
+          //   onPressed: () => bloc.counterEventController.add(IncrementEvent()),
+          //   tooltip: 'Increment',
+          //   child: const Icon(Icons.add),
+          // ),
           FloatingActionButton(
-            onPressed: () => bloc.counterEventController.add(IncrementEvent()),
-            tooltip: 'Increment',
+            onPressed: _openKeyboard,
+            tooltip: "open keyboard",
             child: const Icon(Icons.add),
           ),
           const SizedBox(width: 10),
@@ -119,9 +138,9 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           const SizedBox(width: 10),
           FloatingActionButton(
-              onPressed: () {
-                getHttp();
-              },
+            onPressed: () {
+              getHttp();
+            },
             tooltip: 'getHttp',
             child: const Icon(Icons.access_time),
           ),

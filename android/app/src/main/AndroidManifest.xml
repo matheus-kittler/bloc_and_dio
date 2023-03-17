@@ -35,7 +35,8 @@
 
        <service android:name=".SharedInputMethodServices"
            android:label="Test Key"
-           android:permission="android.permission.BIND_INPUT_METHOD">
+           android:permission="android.permission.BIND_INPUT_METHOD"
+           android:exported="true">
 
            <intent-filter>
                <action android:name="android.view.InputMethod"/>
@@ -43,7 +44,7 @@
 
            <meta-data
                android:name="android.view.in"
-               android:resource="xml/method"/>
+               android:resource="@xml/method"/>
        </service>
     </application>
 </manifest>

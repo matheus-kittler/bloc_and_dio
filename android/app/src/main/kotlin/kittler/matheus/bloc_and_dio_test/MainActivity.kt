@@ -15,7 +15,7 @@ class MainActivity : FlutterActivity() {
                 it,
                 CHANNEL_NAME
             ).setMethodCallHandler { call, result ->
-                if (call.method.equals("helloFromNative")) {
+                if (call.method.equals("HelloFromNative")) {
                     helloFromNative()
                     result.success("DONE!")
                 }
