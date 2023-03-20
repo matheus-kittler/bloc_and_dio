@@ -1,7 +1,5 @@
 import 'package:bloc_and_dio_test/bloc/home_bloc.dart';
 import 'package:bloc_and_dio_test/bloc/counter_event.dart';
-import 'package:bloc_and_dio_test/repository/page_repository.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -16,11 +14,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Share Payment Link',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(title: 'Escolha como compartilhar o link'),
     );
   }
 }
@@ -35,98 +33,61 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
-  void getHttp() async {
-    try {
-      var response = await Dio().get('https://gb-mobile-app-teste.s3.amazonaws.com/data.json');
-      if (kDebugMode) {
-        ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-          content: Text(response.toString()),
-        ));
-      }
-    } catch(e) {
-      if (kDebugMode) {
-        print(e);
-      }
-    }
-  }
-
-  // utilizando o setState
-  // void _incrementCounter() {
-  //   setState(() {
-  //     _counter++;
-  //   });
-  // }
-  //
-  // void _regressCounter() {
-  //   setState(() {
-  //     _counter--;
-  //   });
-  // }
-
-  final bloc = CounterBloc();
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white70,
       appBar: AppBar(
         title: Text(widget.title),
       ),
       body: Center(
-        child: StreamBuilder(
-          stream: bloc.counter,
-          initialData: 0,
-          builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                const Text('You have pushed the button this many times:'),
-                Text(
-                  '${snapshot.data}',
-                  style: Theme.of(context).textTheme.displayMedium,
+        child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              ClipRRect(
+                borderRadius: BorderRadius.circular(4.0),
+                child: Container(
+                  alignment: Alignment.topCenter,
+                  constraints:
+                      const BoxConstraints(maxHeight: 195, maxWidth: 400),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5.0),
+                      color: Colors.white,
+                      boxShadow: const [
+                        BoxShadow(
+                          color: Colors.grey,
+                          offset: Offset(4.0, 4.0), //(x,y)
+                          blurRadius: 6.0,
+                        )
+                      ]),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      const Text("R\$ 125,00"),
+                      Container(
+                        alignment: Alignment.center,
+                        constraints: const BoxConstraints(maxWidth: 370, maxHeight: 50),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(4.0),
+                          color: Colors.red
+                        ),
+                        child: const Text("https://finance.2DFSEW2"),
+                      ),
+                      Container(
+                        alignment: Alignment.center,
+                        constraints: const BoxConstraints(maxWidth: 370, maxHeight: 50),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(4.0),
+                            color: Colors.blue
+                        ),
+                        child: const Text("test"),
+                      )
+                    ],
+                  ),
                 ),
-              ],
-            );
-          },
-        ),
-        // child: Column(
-        //   mainAxisAlignment: MainAxisAlignment.center,
-        //   children: <Widget>[
-        //     const Text(
-        //       'You have pushed the button this many times:',
-        //     ),
-        //     Text(
-        //       '$_counter',
-        //       style: Theme.of(context).textTheme.headline4,
-        //     ),
-        //   ],
-        // ),
+              )
+            ]),
       ),
-      floatingActionButton: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: <Widget>[
-          FloatingActionButton(
-            onPressed: () => bloc.counterEventController.add(IncrementEvent()),
-            tooltip: 'Increment',
-            child: const Icon(Icons.add),
-          ),
-          const SizedBox(width: 10),
-          FloatingActionButton(
-            onPressed: () => bloc.counterEventController.add(RegressEvent()),
-            tooltip: 'Regress',
-            child: const Icon(Icons.remove),
-          ),
-          const SizedBox(width: 10),
-          FloatingActionButton(
-              onPressed: () {
-                getHttp();
-              },
-            tooltip: 'getHttp',
-            child: const Icon(Icons.access_time),
-          ),
-        ],
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
