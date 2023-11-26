@@ -38,7 +38,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void getHttp() async {
     try {
-      var response = await Dio().get('https://gb-mobile-app-teste.s3.amazonaws.com/data.json');
+      var response = await Dio().get('https://5f5a8f24d44d640016169133.mockapi.io/api/events');
       if (kDebugMode) {
         ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
