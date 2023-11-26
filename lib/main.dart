@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
+  const MyHomePage({super.key, required this.title});
 
   final String title;
 
@@ -39,7 +39,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void getHttp() async {
     try {
       var response = await Dio().get('https://5f5a8f24d44d640016169133.mockapi.io/api/events');
-      if (kDebugMode) {
+      if (kDebugMode && context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
           content: Text(response.toString()),

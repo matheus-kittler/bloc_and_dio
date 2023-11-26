@@ -25,5 +25,9 @@ dev_dependencies:
 
   flutter_lints: ^3.0.1
 
+linter:
+  rules:
+    - use_build_context_synchronously
+
 flutter:
   uses-material-design: true
